@@ -1,11 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UniRx;
+
+[System.Serializable]
+public class TopBarCallbacks
+{
+	public List<UnityEvent> m_callbacks;
+}
 
 public class TopBar : MonoBehaviour {
 	[SerializeField] TopBarMenuWindow m_menuWindow;
-
+	[SerializeField] List<TopBarCallbacks> m_topMenuCallbacks;
 	bool m_windowOpenMode;
 	TopBarWindowButton m_currentButton;
 
@@ -26,7 +33,7 @@ public class TopBar : MonoBehaviour {
 	{
 		new List<string>(new string[] {""}),
 		new List<string>(new string[] {"Save", "Load"}),
-		new List<string>(new string[] {"Change timescale"}),
+		new List<string>(new string[] {"Next week", "Previous week", "Switch (weekday/weekends)"}),
 	};
 
 	public void HideMenuWindow()
@@ -65,7 +72,11 @@ public class TopBar : MonoBehaviour {
 
 	public void OnMenuElementClicked(int elementIndex)
 	{
-		Debug.Log(m_menuElements[(int)m_currentButton][elementIndex] + " pressed");
+		if(m_topMenuCallbacks[(int)m_currentButton-1].m_callbacks.Count > elementIndex)
+		{
+			m_topMenuCallbacks[(int)m_currentButton-1].m_callbacks[elementIndex].Invoke();
+		}
+		
 		HideMenuWindow();
 	}
 }

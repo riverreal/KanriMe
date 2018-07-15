@@ -23,6 +23,11 @@ public class AnimationManager : MonoBehaviour {
 		seq.Append(m_kanriMeText.rectTransform.DOAnchorPos(movePos, 1.0f));
 		seq.Join(m_topBar.DOAnchorPosY(Common.Parameters.ReferenceTop - m_topBar.rect.height/2, 1.0f));
 		seq.Join(m_kanriMeText.rectTransform.DOScale(new Vector2(1.0f, 1.0f), 1.0f));
-		seq.Append(m_timeBar.DOAnchorPosX(Common.Parameters.ReferenceLeft + m_timeBar.rect.width/2, 0.8f));
+		seq.Append(m_timeBar.DOAnchorPosX(Common.Parameters.ReferenceLeft + m_timeBar.rect.width/2, 0.8f).OnComplete(()=>{
+			foreach(Transform line in m_timeBar)
+			{
+				line.GetComponent<Image>().enabled = true;
+			}
+		}));
 	}
 }
