@@ -79,6 +79,11 @@ public class ElementMenu : MonoBehaviour {
 
 	public void OpenMessageEditMenu()
 	{
+		if(m_selectedElement >= m_weekWorkData.weekWork[m_selectedColumn].dayWork.Count - 1)
+		{
+			m_weekWorkData.weekWork[m_selectedColumn].dayWork.Add(new Common.HourWork(Common.WeekWorkParameter.StartTime + m_selectedElement, 0, ""));
+		}
+
 		m_messageEditMenu.SetActive(true);
 		m_editInputField.text = m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement].workContent;
 		m_editDropdown.value = m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement].workType;
@@ -121,6 +126,39 @@ public class ElementMenu : MonoBehaviour {
 		m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement].workType = (int)Common.WeekWorkParameter.WorkType.None;
 		m_weeks[m_selectedColumn].UpdateElement(m_selectedElement, (int)Common.WeekWorkParameter.WorkType.None, "");
 
+		PlayerPrefs.SetString(m_weekDate, JsonUtility.ToJson(m_weekWorkData));
+	}
+
+	//Enlarge element on top or bottom
+	public void OnEnlargeClick(bool top)
+	{
+		int amount = 1;
+		if(top)
+		{
+			amount = -1;
+			if(m_selectedElement <= 0)
+			{
+				return;
+			}
+		}
+		else
+		{
+			if(m_selectedElement >= m_weekWorkData.weekWork[m_selectedColumn].dayWork.Count - 1)
+			{
+				return;
+			}
+		}
+
+		if(m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement + amount].workType != (int)Common.WeekWorkParameter.WorkType.None)
+		{
+			return;
+		}
+
+		m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement + amount].workContent = m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement].workContent;
+		m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement + amount].workType = m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement].workType;
+		m_weeks[m_selectedColumn].UpdateElement(m_selectedElement + amount,
+			m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement + amount].workType,
+			m_weekWorkData.weekWork[m_selectedColumn].dayWork[m_selectedElement + amount].workContent);
 		PlayerPrefs.SetString(m_weekDate, JsonUtility.ToJson(m_weekWorkData));
 	}
 }

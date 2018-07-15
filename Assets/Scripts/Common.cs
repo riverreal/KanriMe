@@ -67,7 +67,7 @@ namespace Common
 		public DayWork()
 		{
 			dayWork = new List<HourWork>();
-			for(int i = WeekWorkParameter.StartTime; i < WeekWorkParameter.StartTime + 11; i++)
+			for(int i = WeekWorkParameter.StartTime; i < WeekWorkParameter.StartTime + 13; i++)
 			{
 				dayWork.Add(new HourWork(i, 0, ""));
 			}
